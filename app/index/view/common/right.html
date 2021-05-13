@@ -1,0 +1,54 @@
+<style>
+/*最近发表+热门新闻*/
+.right-list {
+    box-sizing: border-box;
+    background-color: #f8f8fd;
+    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.3), 0 0 30px rgba(10, 10, 0, 0.1) inset;
+    margin-bottom: 20px;
+    height: 257px;
+}
+.right-list-title {
+    padding: 12px 15px;
+    border-bottom: 1px solid #c0c0c0;
+    font-size: 16px;
+    font-weight: bold;
+}
+.right-list-ul {
+    overflow-y: auto;
+    line-height: 1.8;
+    height: 250px;
+}
+.right-list-ul li {
+    height: 35px;
+    padding : 8px 20px;
+    box-sizing: border-box;
+    background-color: #f8f8fd;
+    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.3), 0 0 30px rgba(10, 10, 0, 0.1) inset;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+</style>
+
+<!-- 最近发表 -->
+<div class="right-list">
+	<div class="right-list-title">
+		<i class="layui-icon">&#xe609;</i> 最近发表
+	</div>
+	<ul class="right-list-ul">
+		{volist name="recList" id="vr"}
+			<li><a href="/index/art/artDet?id={$vr.id}">{$vr.title}</a></li>
+		{/volist}
+		</ul>
+</div>
+<!-- 热门新闻 -->
+<div class="right-list">
+	<div class="right-list-title">
+		<i class="layui-icon">&#xe756;</i> 热门新闻
+	</div>
+	<ul class="right-list-ul">
+		{volist name="hotList" id="vh"}
+			<li><a href="/index/art/artDet?id={$vh.id}">{$vh.title}</a></li>
+		{/volist}
+		</ul>
+</div>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>{$web_title}</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="stylesheet" href="__PLUGIN__/layui/css/layui.css"  media="all">
+<style>
+	body {
+		/*background:rgba(57,61,73,.2);*/
+	}
+	a:hover {
+		color: black;
+	}
+	#lunbo img {
+		width:100%;
+	    /*margin:auto;*/
+	}
+	.logo {
+	    position: absolute;
+	    left: 0;
+	    top: 16px;
+	}
+
+	.layui-nav-item {
+		float: right;
+	}
+</style>
+</head>
+<body>
+
+{include file="common/header" /}
+
+
+<div class="layui-container" style="width: 1160px;box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 30px rgba(10, 10, 0, 0.1) inset;margin-top: 80px;padding-top: 20px;padding-bottom: 15px;">
+	<!-- 留言 -->
+	<div><h2>联系我们 : </h2></div>
+	<hr>
+	<form class="layui-form" action="javascript:;">
+  		<div class="layui-form-item">
+    		<label class="layui-form-label">您的称呼</label>
+    		<div class="layui-input-block">
+      			<input type="text" name="user" lay-verify="required" autocomplete="off" placeholder="请输入您的称呼" class="layui-input">
+    		</div>
+  		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">联系方式</label>
+			<div class="layui-input-block">
+				<input type="text" name="method" lay-verify="required" placeholder="邮箱/电话/QQ" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item layui-form-text">
+			<label class="layui-form-label">详情</label>
+			<div class="layui-input-block">
+				<textarea name="content" placeholder="请输入留言内容" class="layui-textarea" lay-verify="required"></textarea>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<button class="layui-btn" lay-submit="" lay-filter="sub-btn">立即提交</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		</div>
+	</form>
+</div>
+
+<!-- 高德地图 -->
+<div class="layui-container" style="width: 1160px;box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 30px rgba(10, 10, 0, 0.1) inset;margin-top: 20px;padding-top: 20px;padding-bottom: 20px;">
+    <h2>我们的位置 : </h2>
+    <hr>
+    <!-- 地图位置 -->
+    <div class="map-div">
+        <div style="height: 720px; width: 1130px;overflow:hidden;" id="mapContainer">
+        </div>
+    </div>
+</div>
+
+<!-- 百度地图 -->
+<div class="layui-container" style="width: 1160px;box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 30px rgba(10, 10, 0, 0.1) inset;margin-top: 20px;padding-top: 20px; padding-bottom: 20px; margin-bottom: 90px;">
+	<h2>我们的位置 : </h2>
+	<hr>
+	<!-- 地图位置 -->
+	<div class="map-div">
+		<div style="height: 720px; width: 1130px;overflow:hidden;" id="map">
+        </div>
+	</div>
+</div>
+
+{include file="common/footer" /}
+
+<script type="text/javascript" src="__JS__/jquery-3.3.1.min.js"></script>
+<script src="__PLUGIN__/layui/layui.js" charset="utf-8"></script>
+<script>
+	layui.use(['carousel', 'form', 'element', 'layer', 'table', 'flow'], function(){
+  		var carousel = layui.carousel
+  			,form = layui.form
+  			,table = layui.table
+  			,flow = layui.flow
+  			,element = layui.element
+  			,layer = layui.layer
+  			;
+
+  		form.on('submit(sub-btn)', function(data){
+			console.log(data.field);
+			$.post("{:url('index/meg/index')}", data.field, function(result){
+	            if(result.status == 0) {  // 成功
+	                layer.msg(result.message);
+	                return;
+	            } else {
+	                layer.msg(result.message);
+	            }
+	        },"JSON");
+			return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+		});
+	});
+</script>
+
+<!-- 高德地图 -->
+<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=15312da89e31195ec5bdeab7e071dede"></script>
+<script src="//webapi.amap.com/ui/1.0/main.js"></script>
+<script type="text/javascript">
+
+    var map = new AMap.Map('mapContainer',{
+        zoom:20,
+        center:[113.156247,23.026253]
+    });
+    AMap.plugin(['AMap.ToolBar','AMap.AdvancedInfoWindow'],function(){
+        var toolbar = new AMap.ToolBar();
+        map.plugin(toolbar);
+        map.addControl(toolbar);
+        //创建高级信息窗体并在指定位置打开
+        var infowindow = new AMap.AdvancedInfoWindow({
+            content: '<div class="info-title">'+{$web_title}+'</div><div class="info-content">'+
+                '<img style="height:54px;width:54px;" src="__IMG__/ic_launcher_nougat.png">'+
+                '国内最新, 最热, 最前沿!'+
+                '</div>',
+            offset: new AMap.Pixel(0, -30)
+        });
+        infowindow.open(gdmap,[113.156247,23.026253]);
+    });
+
+
+    //设置DomLibrary，jQuery或者Zepto
+    AMapUI.setDomLibrary($);
+
+    //加载SimpleInfoWindow，loadUI的路径参数为模块名中 'ui/' 之后的部分
+    AMapUI.loadUI(['overlay/SimpleInfoWindow'], function(SimpleInfoWindow) {
+
+        var infoWindow = new SimpleInfoWindow({
+            infoTitle: '<strong>东二小学</strong>',
+            infoBody: '<p>东二小学欢迎您。</p>'
+        });
+
+        //显示在map上
+        infoWindow.open(map, map.getCenter());
+    });
+</script>
+
+<!-- 百度地图 -->
+<script>
+    var markerArr = [{"title":"东二小学","point":"113.162647,23.032599","address":"东二小学"}];	// 小镇坐标列表
+
+    var map; //Map实例
+    function map_init() {
+        map = new BMap.Map("map");
+
+        //第1步：设置地图中心点，公司
+        var point = new BMap.Point(113.162647,23.032599);
+
+        //第2步：初始化地图,设置中心点坐标和地图级别。
+        map.centerAndZoom(point,20);
+
+        //第3步：启用滚轮放大缩小
+        map.enableScrollWheelZoom(true);
+
+        //第4步：向地图中添加缩放控件
+        var ctrlNav = new window.BMap.NavigationControl({
+            anchor: BMAP_ANCHOR_TOP_LEFT,
+            type: BMAP_NAVIGATION_CONTROL_LARGE
+        });
+        map.addControl(ctrlNav);
+
+        //第5步：向地图中添加缩略图控件
+        var ctrlOve = new window.BMap.OverviewMapControl({
+            anchor: BMAP_ANCHOR_BOTTOM_RIGHT,
+            isOpen: 1
+        });
+        map.addControl(ctrlOve);
+
+        //第6步：向地图中添加比例尺控件
+        var ctrlSca = new window.BMap.ScaleControl({
+            anchor: BMAP_ANCHOR_BOTTOM_LEFT
+        });
+        map.addControl(ctrlSca);
+
+        //第7步：绘制点
+        for (var i = 0; i < markerArr.length; i++) {
+            var p0 = markerArr[i].point.split(",")[0];
+            var p1 = markerArr[i].point.split(",")[1];
+            var maker = addMarker(new window.BMap.Point(p0, p1), i);
+            addInfoWindow(maker, markerArr[i], i);
+        }
+    }
+
+    // 添加标注
+    function addMarker(point, index) {
+        var myIcon = new BMap.Icon("http://api.map.baidu.com/img/markers.png",
+            new BMap.Size(23, 25), {
+                offset: new BMap.Size(10, 25),
+                imageOffset: new BMap.Size(0, 0 - index * 25)
+            });
+        var marker = new BMap.Marker(point, { icon: myIcon });
+        map.addOverlay(marker);
+        return marker;
+    }
+
+    // 添加信息窗口
+    function addInfoWindow(marker, poi) {
+        //pop弹窗标题
+        var title = '<div style="font-weight:bold;color:#CE5521;font-size:14px">' + poi.title + '</div>';
+        //pop弹窗信息
+        var html = [];
+        html.push('<table cellspacing="0" style="table-layout:fixed;width:100%;font:12px arial,simsun,sans-serif"><tbody>');
+        html.push('<tr>');
+        html.push('<td style="vertical-align:top;line-height:16px;width:38px;white-space:nowrap;word-break:keep-all">地址:</td>');
+        html.push('<td style="vertical-align:top;line-height:16px">' + poi.address + ' </td>');
+        html.push('</tr>');
+        html.push('</tbody></table>');
+        var infoWindow = new BMap.InfoWindow(html.join(""), { title: title, width: 200 });
+
+        var openInfoWinFun = function () {
+            marker.openInfoWindow(infoWindow);
+        };
+        marker.addEventListener("click", openInfoWinFun);
+        return openInfoWinFun;
+    }
+
+    //异步调用百度js
+    function map_load() {
+        var load = document.createElement("script");
+        // http://api.map.baidu.com/api?v=2.0&ak=m6zPNIbESEVdvbKo1SqnnwntVmVMn98X
+        // load.src = "http://api.map.baidu.com/api?v=1.4&callback=map_init";
+        load.src = "http://api.map.baidu.com/api?v=2.0&callback=map_init";
+        document.body.appendChild(load);
+    }
+    window.onload = map_load;
+</script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>{$web_title}</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="stylesheet" href="__PLUGIN__/layui/css/layui.css"  media="all">
+<style>
+	body {
+		background:rgba(57,61,73,.2);
+	}
+	a:hover {
+		color: black;
+	}
+	#lunbo img {
+		width:100%;
+	    /*margin:auto;*/
+	}
+	.logo {
+	    position: absolute;
+	    left: 0;
+	    top: 16px;
+	}
+
+	.layui-nav-item {
+		float: right;
+	}
+</style>
+</head>
+<body>
+
+{include file="common/header" /}
+
+{include file="common/footer" /}
+
+</div>
+<script src="__PLUGIN__/layui/layui.js" charset="utf-8"></script>
+<script>
+	layui.use(['carousel', 'form', 'element', 'layer', 'table', 'flow'], function(){
+  		var carousel = layui.carousel
+  			,form = layui.form
+  			,table = layui.table
+  			,flow = layui.flow
+  			,element = layui.element
+  			//,layer = layui.layer
+  			;
+
+  		// 常规轮播
+  		carousel.render({
+    		elem: '#lunbo'
+    		,arrow: 'always'
+    		,width: '100%'
+  		});
+
+  		// 流加载
+  		/*flow.load({
+    		elem: '#demo' //指定列表容器
+    		,done: function(page, next){ //到达临界点（默认滚动触发），触发下一页
+      			var lis = [];
+      			//以jQuery的Ajax请求为例，请求下一页数据（注意：page是从2开始返回）
+				$.get('/api/list?page='+page, function(res){
+					//假设你的列表返回在data集合中
+					layui.each(res.data, function(index, item){
+					lis.push('<li>'+ item.title +'</li>');
+				});
+
+				//执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
+				//pages为Ajax返回的总页数，只有当前页小于总页数的情况下，才会继续出现加载更多
+				next(lis.join(''), page < res.pages);
+				});
+    		}
+  		});*/
+
+  		// 最近发表
+  		/*table.render({
+		    elem: '#recent'
+		    ,url:"{:url('art/artRecent')}"
+		    ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+		    ,cols: [[
+		      	// {field:'id', width:80, title: 'ID', sort: true}
+		      	{field:'title', width:'100%', title: '最近发表'}
+		    ]]
+  		});*/
+	});
+</script>
+
+</body>
+</html>

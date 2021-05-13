@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Challenger</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="stylesheet" href="__PLUGIN__/layui/css/layui.css" media="all">
+	<style type="text/css">
+		.one {
+			margin:auto;
+			padding: 1rem;
+			width: 355px;
+			margin-top: 10rem;
+			background-color: #1D2631;
+		}
+		.layui-form-label {
+		    float: left;
+		    display: block;
+		    padding: 9px 0px;
+		    width: 43px;
+		    font-weight: 400;
+		    text-align: right;
+		}
+		.layui-input-block {
+		    margin-left: 57px;
+		    min-height: 36px;
+		}
+	</style>
+</head>
+<body>
+	<!-- <div class="one"> -->
+	<form class="layui-form" action="javascript:;" style="border: 1px solid #E6E6E6; margin: 10px; padding: 10px;">
+		<div class="layui-form-item">
+		    <label class="layui-form-label">标题 :</label>
+		    <div class="layui-input-block">
+		      	<input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+		    </div>
+		</div>
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">正文 :</label>
+		    <div class="layui-input-block">
+		        <script id="content" name="content" type="text/plain"></script>
+		    </div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+  				<button class="layui-btn" lay-submit lay-filter="formSub">立即提交</button>
+  				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		</div>
+	</form>
+	<!-- </div> -->
+
+<script src="__JS__/jquery-3.3.1.min.js"></script>
+<script src="__PLUGIN__/layui/layui.js"></script>
+
+<script>
+	layui.use(['layer', 'layedit', 'form'], function(){
+		var layer 	= layui.layer,
+			layedit = layui.layedit,
+			form 	= layui.form;
+
+		// 自定义验证规则
+		form.verify({
+		    title: function(value){
+		      	if(value.length < 5){
+		        	return '标题至少得5个字符啊';
+		      	}
+		    },
+		    content: function(value){
+		      	layedit.sync(editIndex);
+		    }
+		});
+
+		form.on('submit(formSub)', function(data){
+            var url  = "{:url('news/addnews')}";
+            $.post(url, data.field, function(result) {
+                //var result = JSON.parse(result);	// json 字符串 转 对象
+                layer.msg(result.message);
+                return;
+                if (result.status == 1) {
+                    setTimeout(function () {
+                        window.location.href = "{:url('news/newslist')}";
+                    }, 1000);
+                }
+            },"JSON");
+
+			console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+			return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+		});
+	});
+</script>
+
+<!-- ueditor -->
+<script type="text/javascript" src="__PLUGIN__/ueditor/ueditor.config.js"></script>
+<!-- 配置文件 -->
+<script type="text/javascript" src="__PLUGIN__/ueditor/ueditor.all.js"></script>
+<!-- 编辑器源码文件 -->
+<script type="text/javascript">
+    // 实例化编辑器
+    var URL = "__PLUGIN__/ueditor/";
+    var ue = UE.getEditor('content',{
+        serverUrl: URL + "php/controller.php"// 服务器统一请求接口路径
+        ,autoHeightEnabled: true
+        ,autoFloatEnabled: false
+        ,initialFrameWidth: 850  //初始化编辑器宽度,默认1000   '100%' 这样填写自适应
+        ,initialFrameHeight:700  //初始化编辑器高度,默认320
+        // xss 过滤是否开启,inserthtml等操作
+        ,xssFilterRules: true
+        //input xss过滤
+        ,inputXssFilter: true
+        //output xss过滤
+        ,outputXssFilter: true
+        ,imageScaleEnabled: true
+        ,toolbars: [[
+            'source', '|', 'undo', 'redo', '|',
+            'bold', 'italic', 'underline', 'fontborder', 'strikethrough',  'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
+            'rowspacingtop', 'rowspacingbottom', 'lineheight', '|',
+            'customstyle', 'paragraph', 'fontfamily', 'fontsize', '|',
+            'indent', '|',
+            'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|', 'touppercase', 'tolowercase', '|',
+            'link', 'unlink', 'anchor', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
+            'simpleupload', 'insertimage', 'emotion', 'scrawl',  'map',  'pagebreak', 'template', 'background', '|',
+            'horizontal', 'date', 'time'
+        ]]
+    });
+</script>
+<!-- ueditor 结束 -->
+</body>
+</html>

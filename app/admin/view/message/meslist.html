@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Challenger</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="stylesheet" href="__PLUGIN__/layui/css/layui.css" media="all">
+	<style type="text/css">
+		.one {
+			border: 1px solid #E6E6E6;
+		    margin: 10px;
+		    padding: 10px;
+		}
+	</style>
+</head>
+<body>
+
+<div class="one">
+	<table id="artListTable" lay-filter="artListTable"></table>
+	<script type="text/html" id="editBar">
+        <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="close">删除</a>
+    </script>
+</div>
+
+<script src="__JS__/jquery-3.3.1.min.js"></script>
+<script src="__PLUGIN__/layui/layui.js"></script>
+
+<script>
+	layui.use(['element', 'table', 'form', 'layer'], function(){
+        var element = layui.element,
+            layer   = layui.layer,
+            form    = layui.form,
+			table   = layui.table;
+
+		// 执行渲染
+        table.render({
+            elem: document.getElementById('artListTable'),  //指定原始表格元素选择器（推荐id选择器）
+            url: "{:url('message/meslist')}",
+            method: 'post',
+            type: 'json',
+            edit:'text',    // 是否可以编辑
+            height: 'full',    // 高度
+            page: true,     // 开启分页
+            limits: [30,60,90,100],
+            limit: 30,      // 默认采用每页30条数据
+            // loading: true,  // 是否显示加载条
+            even: true,     //开启隔行背景
+            cols: [[        // 设置表头
+                {type: 'numbers', width:30},
+                {field:'id', title:'ID', width:55, sort:true},
+                {field:'user', title:'称呼', width:120, edit:'text', style:'background-color: #5FB878; color: #fff;'},
+                {field:'method', title:'联系方式', width:120, templet:'#statusTpl'},
+                {field:'content', title:'详情', width:560, sort:true, style:'background-color: #6B6C68; color:#fff;'},
+                { align:'center', width:80, toolbar:'#editBar', style:'background-color: #F2F2F2;'},
+            ]],
+        });
+
+        // 监听工具条
+        table.on('tool(artListTable)', function(obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+            // 编辑
+            if (layEvent === 'close') {
+                layer.confirm('真的删除么', function(index) {
+                    $.ajax({
+                        type: 'post',
+                        url : "{:url('Message/editStatus')}",
+                        data: {'method':'close', 'status':-1, 'id':data.id},
+                        dataType: 'json',
+                        success: function(result) {
+                            if (result.status == 0) {
+                                layer.msg(result.message);
+                                setTimeout(function () {
+                                    obj.del();          // 删除对应行（tr）的DOM结构
+                                    // layer.close(index);
+                                    location.reload();
+                                }, 1000);
+                            } else if (result.status == 1) {
+                                layer.alert(result.message);
+                            }
+                            return;
+                        },
+                        error:function(jqXHR){
+                            layer.msg("发生错误" + jqXHR.status);
+                        }
+                    });
+                });
+            }
+
+        });
+	});
+</script>
+
+<!-- recommend 模版 -->
+<script type="text/html" id="recommendTpl">
+  {{#  if(d.recommend === 'on'){ }}
+    <input type="checkbox" name="recommend" lay-skin="switch" lay-text="推荐|关闭" id="recommend_{{ d.id }}" value="on" checked="">
+  {{#  } else { }}
+    <input type="checkbox" name="recommend" lay-skin="switch" lay-text="推荐|关闭" id="recommend_{{ d.id }}" value="off">
+  {{#  } }}
+</script>
+
+</body>
+</html>

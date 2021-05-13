@@ -1,0 +1,31 @@
+[{
+    "id": "5",
+    "title": "文章管理",
+    "icon": "fa-stop-circle",
+    "url": "",
+    "spread": true,
+    "children": [{
+        "id": "7",
+        "title": "文章列表",
+        "icon": "&#xe6c6;",
+        "url": "News/newslist"
+    }, {
+        "id": "11",
+        "title": "添加文章",
+        "icon": "&#xe658;",
+        "url": "News/addnews"
+    }]
+}, {
+    "id": "6",
+    "title": "留言管理",
+    "icon": "fa-stop-circle",
+    "url": "#",
+    "spread": false,
+    "children": [{
+        "id": "8",
+        "title": "留言列表",
+        "icon": "&#xe6c6;",
+        "url": "Message/meslist"
+    }]
+}
+]

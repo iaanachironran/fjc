@@ -1,0 +1,69 @@
+<style>
+	.layui-header {
+		position: fixed;
+		top: 0px;
+		/*left: 0px;*/
+		width: 100%;
+		background-color: #393D49;
+	}
+	.logo {
+	    position: absolute;
+	    left: 0;
+	    top: 16px;
+	}
+	.layui-nav-item {
+		float: right;
+	}
+</style>
+<div class="layui-header header header-doc" style="">
+  	<div class="layui-main">
+    	<ul class="layui-nav" style="width: 100%;">
+    		<a class="logo" href="/" style="color: white;">
+		      	<img src="__IMG__/ic_launcher_nougat.png" alt="layui" style="height: 30px;width: 30px;z-index: 10000;float:left;">
+		      	<span style="float:left;top: -5px;font-size: 25px;">&nbsp;{$web_title}</span>
+		    </a>
+
+		    {eq name="ifLogin" value="true"}
+		      	<li class="layui-nav-item {eq name="_class" value="user"}layui-this{/eq}">
+	        		<a href="javascript:;">
+	          			{$uname}
+	        		</a>
+	        		<dl class="layui-nav-child layui-anim layui-anim-upbit">
+	        		    <dd><a href="/index/user/center">个人中心</a></dd>
+	        		    <dd><a href="/index/user/logout">退出</a></dd>
+	        		</dl>
+	      		</li>
+			{else/}
+			    <li class="layui-nav-item">
+		        	<a href="/index/user/login">登录</a>
+		      	</li>
+			{/eq}
+
+			<li class="layui-nav-item {eq name="_class" value="source"}layui-this{/eq}">
+				<a href="javascript:;">
+					配套资源
+        		</a>
+        		<dl class="layui-nav-child layui-anim layui-anim-upbit">
+        		    <dd><a href="/index/source/index">部编版教材</a></dd>
+        		</dl>
+      		</li>
+      		<li class="layui-nav-item {eq name="_class" value="department"}layui-this{/eq}">
+				<a href="javascript:;">
+					课程
+        		</a>
+        		<dl class="layui-nav-child layui-anim layui-anim-upbit">
+        		    <dd><a href="/index/department/index">小学专题汇总</a></dd>
+        		    <dd><a href="/index/department/resource">学科资源</a></dd>
+        		</dl>
+      		</li>
+
+
+	      	<li class="layui-nav-item {eq name="_class" value="meg"}layui-this{/eq}">
+	        	<a href="/index/meg/">留言板</a>
+	      	</li>
+	      	<li class="layui-nav-item {eq name="_class" value="index"}layui-this{/eq}">
+	        	<a href="/">首页</a>
+	      	</li>
+	    </ul>
+  	</div>
+</div>

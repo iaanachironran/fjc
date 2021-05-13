@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Challenger</title>
+    <link rel="stylesheet" href="__PLUGIN__/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="__PLUGIN__/font-awesome/css/font-awesome.min.css" media="all">
+    <style>
+        .info-box {
+            height: 85px;
+            background-color: white;
+            background-color: #ecf0f5;
+        }
+
+        .info-box .info-box-icon {
+            border-top-left-radius: 2px;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 2px;
+            display: block;
+            float: left;
+            height: 85px;
+            width: 85px;
+            text-align: center;
+            font-size: 45px;
+            line-height: 85px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .info-box .info-box-content {
+            padding: 5px 10px;
+            margin-left: 85px;
+        }
+
+        .info-box .info-box-content .info-box-text {
+            display: block;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-transform: uppercase;
+        }
+
+        .info-box .info-box-content .info-box-number {
+            display: block;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .main {
+            margin-top: 25px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="layui-fluid main">
+
+        <div style="border: 1px solid #C4C5C9; float: left;width: 100%;">
+
+            <!-- 时间线 -->
+            <div style="border-left: 5px solid #009688; padding: 10px;width: 700px;float: left;margin: 30px;">
+                <ul class="layui-timeline">
+
+                    <li class="layui-timeline-item">
+                        <i class="layui-icon layui-timeline-axis">&#xe756;</i>
+                        <div class="layui-timeline-content layui-text">
+                            <h3 class="layui-timeline-title">10月13日</h3>
+                            <p>
+                                功能模块链接打开方式优化为选项卡方式。
+                                <!-- <br>不枉近百个日日夜夜与之为伴。因小而大，因弱而强。
+                                <br>无论它能走多远，抑或如何支撑？至少我曾倾注全心，无怨无悔 -->
+                            </p>
+                        </div>
+                    </li>
+
+                    <li class="layui-timeline-item">
+                        <i class="layui-icon layui-timeline-axis">&#xe61f;</i>
+                        <div class="layui-timeline-content layui-text">
+                            <h3 class="layui-timeline-title">9月19日</h3>
+                            <p>
+                                时间线上线, 发布功能更新公告。
+                                <br>不枉近百个日日夜夜与之为伴。因小而大，因弱而强。
+                                <br>无论它能走多远，抑或如何支撑？至少我曾倾注全心，无怨无悔 <i class="layui-icon" style="color: #fd0c38;">&#xe6af;</i>
+                            </p>
+                        </div>
+                    </li>
+
+                    <li class="layui-timeline-item">
+                        <i class="layui-icon layui-timeline-axis">&#xe62e;</i>
+                        <div class="layui-timeline-content layui-text">
+                            <h3 class="layui-timeline-title">9月18日</h3>
+                            <p>
+                                九一八事变
+                                <br>日本在中国东北蓄意制造并发动的一场侵华战争，是日本帝国主义侵华的开端。
+                                <br><a href="http://news.ifeng.com/a/20170918/52034238_0.shtml?_zbs_baidu_bk" target="_blank">纪念九一八事变86周年军报：不忘记忆才能捍卫正义</a>
+                                <br>所有为中华民族浴血奋战的英雄将士
+                                <br>永垂不朽 <i class="layui-icon" style="color: #fd0c38;">&#xe613;</i>
+                            </p>
+                        </div>
+                    </li>
+
+                    <li class="layui-timeline-item">
+                        <i class="layui-icon layui-timeline-axis">&#xe63d;</i>
+                        <div class="layui-timeline-content layui-text">
+                            <div class="layui-timeline-title">过去, 过去很丑...</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <!-- 时间线 end-->
+
+            <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+           <!--  <div id="main" style="margin-top:10px; width:600px; height:200px; float: right; border: 1px solid #C4C5C9; border-left:5px solid #009688; margin:30px;">
+            </div> -->
+
+        </div>
+        <div style="border: 1px solid #C4C5C9;">
+        </div>
+    </div>
+    <script src="__PLUGIN__/layui/layui.js"></script>
+    <script>
+        layui.use('jquery', function() {
+            var $ = layui.jquery;
+            $('#test').on('click', function() {
+                parent.message.show({
+                    skin: 'cyan'
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

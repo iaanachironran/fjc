@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>{$web_title}</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="stylesheet" href="__PLUGIN__/layui/css/layui.css"  media="all">
+<style>
+	body {
+		/*background:rgba(57,61,73,.2);*/
+	}
+	a:hover {
+		color: black;
+	}
+	#lunbo img {
+		width:100%;
+	}
+	.layui-nav-item {
+		float: right;
+	}
+    .layui-code, .layui-upload-list {
+        margin:0;
+    }
+</style>
+</head>
+<body>
+
+{include file="common/header" /}
+
+<div class="layui-container" style="width: 1160px;box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 30px rgba(10, 10, 0, 0.1) inset;margin-top: 80px;padding-top: 20px;padding-bottom: 15px;overflow: hidden;    margin-bottom: 100px;">
+
+    <h2>个人信息</h2>
+    <hr>
+    <br>
+    <form class="layui-form layui-form-pane" action="javascript:;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">头像</label>
+            <div class="layui-input-inline">
+                <div class="layui-upload">
+                    <div class="layui-upload-list">
+                        <img class="layui-upload-img" id="avatar" style="height: 150px;" src="
+                        <?php
+                            if (empty($userinfo['avatar_img'])) {
+                                echo "/static/index/images/default_avatar.jpg";
+                            } else {
+                                echo $userinfo['avatar_img'];
+                            }
+                        ?>">
+                        <p id="demoText"></p>
+                    </div>
+                    <button type="button" class="layui-btn" id="edit_btn" style="margin-top: -37px;line-height: 20px;    height: 18px;width: 150px;">修改头像</button>
+                </div> 
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名</label>
+            <div class="layui-input-inline">
+                <input type="text" name="uname" lay-verify="uname" autocomplete="off" placeholder="请输入用户名" class="layui-input" value="{$userinfo.uname}">
+            </div>
+        </div>
+        <div class="layui-form-item" pane="">
+            <label class="layui-form-label">性别</label>
+            <div class="layui-input-block">
+                <input type="radio" name="sex" value="男" title="男" {if condition="$userinfo.sex eq '男'"} checked="" {/if}>
+                <input type="radio" name="sex" value="女" title="女" {if condition="$userinfo.sex eq '女'"} checked="" {/if}>
+                <input type="radio" name="sex" value="保密" title="保密" {if condition="$userinfo.sex eq '保密'"} checked="" {/if}>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="sub_btn">保存</button>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+{include file="common/footer" /}
+<script src="__PLUGIN__/layui/layui.js" charset="utf-8"></script>
+<script>
+    var avatar_img = "{$userinfo.avatar_img}";
+    layui.use(['jquery', 'carousel', 'form', 'element', 'layer', 'table', 'flow', 'upload'], function(){
+        var $ = layui.jquery
+            ,carousel    = layui.carousel
+            ,form       = layui.form
+            ,element    = layui.element
+            ,layer      = layui.layer
+            ,table      = layui.table
+            ,flow       = layui.flow
+            ,upload     = layui.upload;
+
+        form.on('submit(sub_btn)', function(data){
+            data.field.file = avatar_img;
+            console.log(data.field);
+            $.post("{:url('index/user/center')}", data.field, function(result){
+                if(result.status == 0) {  // 成功
+                    layer.msg(result.message);
+                    return;
+                } else {
+                    layer.msg(result.message);
+                }
+            },"JSON");
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#edit_btn'
+            ,url: '/index/user/upimg/'
+            ,accept: 'images' //允许上传的文件类型
+            ,before: function(obj){
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result){
+                    $('#avatar').attr('src', result); //图片链接（base64）
+                });
+            }
+            ,done: function(res){
+                //如果上传失败
+                if(res.code > 0){
+                    return layer.msg('上传失败');
+                }
+                //上传成功
+                console.log(res.data.src);
+                avatar_img = res.data.src;
+                $('#demoText').html('');
+                return layer.msg('上传成功');
+            }
+            ,error: function(){
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function(){
+                    uploadInst.upload();
+                });
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
