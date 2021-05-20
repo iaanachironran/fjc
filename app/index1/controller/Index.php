@@ -4,7 +4,7 @@ use think\Controller;
 use think\Request;
 use think\Db;
 
-class Index extends Controller
+class Index extends Common
 {
 	public $req;
 	function __construct() {
@@ -20,16 +20,16 @@ class Index extends Controller
     // 主页
     public function index() {
     	// 新闻列表
-    	// $newList = Db::query("SELECT * FROM `news` WHERE `status`='1' ORDER BY `publish_time` DESC LIMIT 10");
-    	// $this->assign('newList', $newList);
+    	$newList = Db::query("SELECT * FROM `news` WHERE `status`='1' ORDER BY `publish_time` DESC LIMIT 10");
+    	$this->assign('newList', $newList);
 
     	// 最近发表
-    	// $recList = Db::query("SELECT * FROM `news` WHERE `status`='1' ORDER BY `publish_time` DESC LIMIT 6");
-    	// $this->assign('recList', $recList);
+    	$recList = Db::query("SELECT * FROM `news` WHERE `status`='1' ORDER BY `publish_time` DESC LIMIT 6");
+    	$this->assign('recList', $recList);
 
     	// 热门新闻
-    	// $hotList = Db::query("SELECT * FROM `news` WHERE `status`='1' ORDER BY `clicked` DESC LIMIT 6");
-    	// $this->assign('hotList', $hotList);
+    	$hotList = Db::query("SELECT * FROM `news` WHERE `status`='1' ORDER BY `clicked` DESC LIMIT 6");
+    	$this->assign('hotList', $hotList);
 
         return $this->fetch();
     }
