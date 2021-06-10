@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Challenger</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="stylesheet" href="__PLUGIN__/layui/css/layui.css" media="all">
+	<style type="text/css">
+		.one {
+			border: 1px solid #E6E6E6;
+		    margin: 10px;
+		    padding: 10px;
+		}
+	</style>
+</head>
+<body>
+
+<div class="one">
+
+    <!-- 添加分类 -->
+    <form class="layui-form" action="javascript:;" method="post">
+            <label class="layui-form-label" style="border-width: 0.6px; padding: 9px 1px; line-height: 19px; border-style: solid; border-radius: 2px; text-align: center; margin-right: 10px;">添加分类</label>
+            <div class="layui-input-inline" style="width:500px;">
+                <input type="text" name="name" required  lay-verify="required" placeholder="请输入名称" autocomplete="off" class="layui-input" style="float: left;width: 200px;margin-right: 10px;">
+                <button class="layui-btn" lay-submit lay-filter="formSub" style="float: left;">立即提交</button>
+            </div>
+    </form>
+
+    <!-- 分类列表 -->
+	<table id="artListTable" lay-filter="artListTable"></table>
+
+</div>
+
+<script src="__JS__/jquery-3.3.1.min.js"></script>
+<script src="__PLUGIN__/layui/layui.js"></script>
+
+<script>
+	layui.use(['element', 'table', 'form', 'layer'], function(){
+        var element = layui.element,
+            layer   = layui.layer,
+            form    = layui.form,
+			table   = layui.table;
+
+        // 添加
+        form.on('submit(formSub)', function(data){
+            var url  = "{:url('classify/addclassify')}";
+            $.post(url, data.field, function(result) {
+                //var result = JSON.parse(result);  // json 字符串 转 对象
+                layer.msg(result.message);
+                // return;
+                if (result.status == 1) {
+                    setTimeout(function () {
+                        window.location.href = "{:url('classify/classifylist')}";
+                    }, 1000);
+                }
+            },"JSON");
+
+            console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+		// 表格 执行渲染
+        table.render({
+            elem: document.getElementById('artListTable'),  //指定原始表格元素选择器（推荐id选择器）
+            url: "{:url('classify/classifyList')}",
+            method: 'post',
+            type: 'json',
+            edit:'text',    // 是否可以编辑
+            height: 'full',    // 高度
+            // width:871,
+            page: true,     // 开启分页
+            limits: [30,60,90,100],
+            limit: 30,      // 默认采用每页30条数据
+            // loading: true,  // 是否显示加载条
+            even: true,     //开启隔行背景
+            cols: [[        // 设置表头
+                {type: 'numbers', width:30},
+                // {type: 'checkbox', width:30},
+                {field:'id', title:'ID', width:55, sort:true},
+                {field:'name', title:'名称', width:320, edit:'text', style:'background-color: #5FB878; color: #fff;'},
+            ]],
+        });
+
+        // 监听单元格编辑
+        table.on('edit(artListTable)', function(obj){
+            //注：edit是固定事件名，artListTable 是table原始容器的属性 lay-filter="对应的值"
+            console.log(obj.value); //得到修改后的值
+            console.log(obj.field); //当前编辑的字段名
+            console.log(obj.data.id);  //所在行的所有相关数据
+
+            var url = "{:url('classify/editclassify')}";
+            var postData = {};
+                postData['id']      = obj.data.id;
+                postData['value']   = obj.value;
+                postData['field']   = obj.field;
+            $.post(url, postData, function(result){
+                // var result = JSON.parse(result);    // json 字符串 转 对象
+                layer.msg(result.message);
+                if (result.recommend == 1) {
+                    // $("#ad_"+id).val(result.data);
+                    /*setTimeout(function () {
+                        // window.location.href = "{:url('books/getArticleList')}";
+                        document.location.reload(); // 重载页面
+                    }, 1000);*/
+                }
+            },"JSON");
+            //data[field] = value; //更新缓存中的值
+        });
+
+	});
+</script>
+
+</body>
+</html>

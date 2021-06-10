@@ -9,7 +9,7 @@ class Commonbase extends Controller
 		parent::__construct();
 
         // 网站名称设置
-        $this->web_title = '东二校园网';
+        $this->web_title = '小小图书';
         $this->assign('web_title', $this->web_title);
     }
 }

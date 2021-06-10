@@ -8,19 +8,19 @@ use app\common\controller\Commonbase;
 
 class Base extends Commonbase
 {
-	public $ifLogin;
+	public $if_login;
 	public function __construct() {
 		parent::__construct();
 
 		// 判断登录状态
         if (Session::has('uname')) {
-            $this->ifLogin = 'true';
+            $this->if_login = 'true';
             $this->assign('uname', Session::get('uname'));
         } else {
-            $this->ifLogin = '';
+            $this->if_login = '';
             $this->redirect('/admin/user/');
         }
-        $this->assign('ifLogin', $this->ifLogin);
+        $this->assign('if_login', $this->if_login);
 	}
 
 }

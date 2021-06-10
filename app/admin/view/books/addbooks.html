@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Challenger</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="stylesheet" href="__PLUGIN__/layui/css/layui.css" media="all">
+	<style type="text/css">
+		.one {
+			margin:auto;
+			padding: 1rem;
+			width: 355px;
+			margin-top: 10rem;
+			background-color: #1D2631;
+		}
+		.layui-form-label {
+		    float: left;
+		    display: block;
+		    padding: 9px 0px;
+		    width: 43px;
+		    font-weight: 400;
+		    text-align: right;
+		}
+		.layui-input-block {
+		    margin-left: 57px;
+		    min-height: 36px;
+		}
+	</style>
+</head>
+<body>
+	<form class="layui-form layui-form-pane" action="javascript:;" style="border: 1px solid #E6E6E6; margin: 10px; padding: 10px;">
+		<div class="layui-form-item">
+		    <label class="layui-form-label">书名 :</label>
+		    <div class="layui-input-inline">
+		      	<input type="text" name="title" required  lay-verify="required" placeholder="请输入书名" autocomplete="off" class="layui-input">
+		    </div>
+		</div>
+		<div class="layui-form-item">
+            <div class="layui-input-inline">
+                <div class="layui-upload">
+                    <div class="layui-upload-list">
+                        <img class="layui-upload-img" id="cover" style="height: 190px;width:150px;margin-top: -10px;">
+                        <p id="demoText"></p>
+                    </div>
+                    <button type="button" class="layui-btn" id="edit_btn" style="margin-top: -57px;line-height: 20px;    height: 18px;width: 150px;">添加/修改封面</button>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text" style="margin-top: -20px;">
+            <label class="layui-form-label">正文 :</label>
+            <div class="layui-input-block">
+                <script id="content" name="content" type="text/plain"></script>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">分类</label>
+            <div class="layui-input-inline">
+                <select name="classify_id" lay-verify="required">
+                    <option value="">请选择分类</option>.
+                    {volist name="classifylist" id="vc"}
+                    <option value="{$vc.id}">{$vc.name}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+  				<button class="layui-btn" lay-submit lay-filter="formSub">立即提交</button>
+  				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		</div>
+	</form>
+
+<script src="__JS__/jquery-3.3.1.min.js"></script>
+<script src="__PLUGIN__/layui/layui.js"></script>
+
+<script>
+	var img = '';
+	layui.use(['jquery', 'carousel', 'form', 'element', 'layer', 'table', 'flow', 'upload'], function(){
+        var $ = layui.jquery
+            ,carousel    = layui.carousel
+            ,form       = layui.form
+            ,element    = layui.element
+            ,layer      = layui.layer
+            ,table      = layui.table
+            ,flow       = layui.flow
+            ,upload     = layui.upload;
+
+		// 自定义验证规则
+		form.verify({
+		    title: function(value){
+		      	if(value.length < 5){
+		        	return '标题至少得5个字符啊';
+		      	}
+		    },
+		    content: function(value){
+		      	layedit.sync(editIndex);
+		    }
+		});
+
+		//普通图片上传
+        var uploadInst = upload.render({
+            elem: '#edit_btn'
+            ,url: '/admin/books/upimg/'
+            ,accept: 'images' //允许上传的文件类型
+            ,before: function(obj){
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result){
+                    $('#cover').attr('src', result); //图片链接（base64）
+                });
+            }
+            ,done: function(res){
+                //如果上传失败
+                if(res.code > 0){
+                    return layer.msg('上传失败');
+                }
+                //上传成功
+                console.log(res.data.src);
+                img = res.data.src;
+                $('#demoText').html('');
+                return layer.msg('上传成功');
+            }
+            ,error: function(){
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function(){
+                    uploadInst.upload();
+                });
+            }
+        });
+
+		form.on('submit(formSub)', function(data){
+			data.field.file = img;
+            var url  = "{:url('books/addbooks')}";
+            $.post(url, data.field, function(result) {
+                //var result = JSON.parse(result);	// json 字符串 转 对象
+                layer.msg(result.message);
+                return;
+                if (result.status == 1) {
+                    setTimeout(function () {
+                        window.location.href = "{:url('books/bookslist')}";
+                    }, 1000);
+                }
+            },"JSON");
+
+			console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+			return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+		});
+	});
+</script>
+
+<!-- ueditor -->
+<script type="text/javascript" src="__PLUGIN__/ueditor/ueditor.config.js"></script>
+<!-- 配置文件 -->
+<script type="text/javascript" src="__PLUGIN__/ueditor/ueditor.all.js"></script>
+<!-- 编辑器源码文件 -->
+<script type="text/javascript">
+    // 实例化编辑器
+    var URL = "__PLUGIN__/ueditor/";
+    var ue = UE.getEditor('content',{
+        serverUrl: URL + "php/controller.php"// 服务器统一请求接口路径
+        ,autoHeightEnabled: true
+        ,autoFloatEnabled: false
+        ,initialFrameWidth: '100%'  //初始化编辑器宽度,默认1000   '100%' 这样填写自适应
+        ,initialFrameHeight:280  //初始化编辑器高度,默认320
+        // xss 过滤是否开启,inserthtml等操作
+        ,xssFilterRules: true
+        //input xss过滤
+        ,inputXssFilter: true
+        //output xss过滤
+        ,outputXssFilter: true
+        ,imageScaleEnabled: true
+        ,toolbars: [[
+            'source', '|', 'undo', 'redo', '|',
+            'bold', 'italic', 'underline', 'fontborder', 'strikethrough',  'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
+            'rowspacingtop', 'rowspacingbottom', 'lineheight', '|',
+            'customstyle', 'paragraph', 'fontfamily', 'fontsize', '|',
+            'indent', '|',
+            'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|', 'touppercase', 'tolowercase', '|',
+            'link', 'unlink', 'anchor', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
+            'simpleupload', 'insertimage', 'emotion', 'scrawl',  'map',  'pagebreak', 'template', 'background', '|',
+            'horizontal', 'date', 'time'
+        ]]
+    });
+</script>
+<!-- ueditor 结束 -->
+</body>
+</html>

@@ -20,10 +20,11 @@
 <div class="one">
 	<table id="artListTable" lay-filter="artListTable"></table>
 	<script type="text/html" id="editBar">
-        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
         <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="detail">预览</a>
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
         <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="close">关闭</a>
         <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="show">发布</a>
+        <!-- <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="recommend">推荐</a> -->
     </script>
 </div>
 
@@ -38,9 +39,9 @@
 			table   = layui.table;
 
 		// 执行渲染
-        table.render({
+        var tableIns = table.render({
             elem: document.getElementById('artListTable'),  //指定原始表格元素选择器（推荐id选择器）
-            url: "{:url('news/newslist')}",
+            url: "{:url('books/bookslist')}",
             method: 'post',
             type: 'json',
             edit:'text',    // 是否可以编辑
@@ -53,37 +54,37 @@
             even: true,     //开启隔行背景
             cols: [[        // 设置表头
                 {type: 'numbers', width:30},
-                // {type: 'checkbox', width:30},
-                {field:'id', title:'ID', width:55, sort:true},
-                {field:'title', title:'标题', width:320, edit:'text', style:'background-color: #5FB878; color: #fff;'},
-                {field:'status', title:'状态', width:73, templet:'#statusTpl'},
-                // {field:'recommend', title:'置顶', width:80, templet:'#recommendTpl'},
+                {field:'id', title:'ID', width:50, sort:true},
+                {field:'title', title:'名称', width:320, edit:'text', style:'background-color: #5FB878; color: #fff;', sort:true},
                 {field:'create_time', title:'创建时间', width:160, sort:true, style:'background-color: #6B6C68; color:#fff;'},
                 {field:'publish_time', title:'发布时间', width:160, sort: true, style:'background-color: #6B6C68; color: #fff;'},
-                { align:'center', width:205, toolbar:'#editBar', style:'background-color: #F2F2F2;'},
+                {field:'recommend', title: '推荐', width: 90, sort: true, templet: '#recommendTpl'},
+                {field:'status', title:'状态', width:73, templet:'#statusTpl'},
+                {align:'center', title: '状态管理', width:255, toolbar:'#editBar', style:'background-color: #F2F2F2;'},
             ]],
         });
 
         // 监听工具条
-        table.on('tool(artListTable)', function(obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
-            var data = obj.data; //获得当前行数据
-            var layEvent = obj.event; //获得 lay-event 对应的值
-            var tr = obj.tr; //获得当前行 tr 的DOM对象
+        table.on('tool(artListTable)', function(obj) {
+        //注：tool是工具条事件名, test 是table原始容器的属性 lay-filter="对应的值"
+            var data     = obj.data;    // 获得当前行数据
+            var layEvent = obj.event;   // 获得 lay-event 对应的值
+            var tr       = obj.tr;      // 获得当前行 tr 的DOM对象
 
             // 编辑
             if (layEvent === 'edit') {
-                return document.location.href = "{:url('news/editnews')}?id="+data.id;
+                return document.location.href = "{:url('books/editbooks')}?id="+data.id;
 
             // 预览
             } else if (layEvent === 'detail') {
-                // http://news.local.com/index/art/artDet?id=2
+                // http://books.local.com/index/art/artDet?id=2
                 return window.open("{:url('index/art/artDet')}?id="+data.id);
 
             // 发布
             } else if (layEvent === 'show') {
                 $.ajax({
                     type: 'post',
-                    url : "{:url('news/editStatus')}",
+                    url : "{:url('books/editStatus')}",
                     data: {'method':'show', 'status':1, 'id':data.id},
                     dataType: 'json',
                     success: function(result) {
@@ -107,7 +108,7 @@
                 layer.confirm('真的关闭么', function(index) {
                     $.ajax({
                         type: 'post',
-                        url : "{:url('news/editStatus')}",
+                        url : "{:url('books/editStatus')}",
                         data: {'method':'close', 'status':-1, 'id':data.id},
                         dataType: 'json',
                         success: function(result) {
@@ -129,59 +130,27 @@
                     });
                 });
             }
-
         });
 
         // 监听switch开关
         form.on('switch', function(data){
-            var id = data.elem.id;
-            console.log(id);
-            return;
-
-            var url = "{:url('news/updateById')}";
+            var id_info  = data.elem.id;
+            var id       = (id_info.split('_'))[1];
+            var url      = "{:url('books/recommend')}";
             var postData = {};
-                postData['action'] = 'switchrecommend';
-                postData['id']     = id;
+                postData['action']    = 'switchrecommend';
+                postData['id']        = id;
                 postData['recommend'] = data.value;
             $.post(url, postData, function(result){
                 // var result = JSON.parse(result);    // json 字符串 转 对象
                 layer.msg(result.message);
-                if (result.recommend == 1) {
-                    $("#recommend_"+id).val(result.data);
-                    /*setTimeout(function () {
-                        // window.location.href = "{:url('news/getArticleList')}";
-                        document.location.reload(); // 重载页面
-                    }, 1000);*/
+                console.log(result.message);
+                if (result.status == 0) {
+                    $("#recommend_"+id).val(result.message);
                 }
+                form.render('checkbox');
             },"JSON");
         });
-
-        // 监听单元格编辑
-        table.on('edit(artListTable)', function(obj){
-            //注：edit是固定事件名，artListTable 是table原始容器的属性 lay-filter="对应的值"
-            console.log(obj.value); //得到修改后的值
-            console.log(obj.field); //当前编辑的字段名
-            console.log(obj.data.id);  //所在行的所有相关数据
-
-            var url = "{:url('news/editArticle')}";
-            var postData = {};
-                postData['id']      = obj.data.id;
-                postData['value']   = obj.value;
-                postData['field']   = obj.field;
-            $.post(url, postData, function(result){
-                // var result = JSON.parse(result);    // json 字符串 转 对象
-                layer.msg(result.message);
-                if (result.recommend == 1) {
-                    // $("#ad_"+id).val(result.data);
-                    /*setTimeout(function () {
-                        // window.location.href = "{:url('news/getArticleList')}";
-                        document.location.reload(); // 重载页面
-                    }, 1000);*/
-                }
-            },"JSON");
-            //data[field] = value; //更新缓存中的值
-        });
-
 	});
 </script>
 
@@ -198,8 +167,8 @@
 
 <!-- recommend 模版 -->
 <script type="text/html" id="recommendTpl">
-  {{#  if(d.recommend === 'on'){ }}
-    <input type="checkbox" name="recommend" lay-skin="switch" lay-text="推荐|关闭" id="recommend_{{ d.id }}" value="on" checked="">
+  {{#  if(d.recommend == 'on'){ }}
+    <input type="checkbox" name="recommend" lay-skin="switch" lay-text="推荐|关闭" id="recommend_{{ d.id }}" value="on" checked="checked">
   {{#  } else { }}
     <input type="checkbox" name="recommend" lay-skin="switch" lay-text="推荐|关闭" id="recommend_{{ d.id }}" value="off">
   {{#  } }}

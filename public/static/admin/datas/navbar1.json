@@ -1,28 +1,33 @@
 [{
     "id": "5",
-    "title": "文章管理",
+    "title": "图书管理",
     "icon": "fa-stop-circle",
     "url": "",
     "spread": true,
     "children": [{
-        "id": "7",
-        "title": "文章列表",
-        "icon": "&#xe6c6;",
-        "url": "News/newslist"
+        "id": "51",
+        "title": "图书列表",
+        "icon": "&#xe60a;",
+        "url": "Books/bookslist"
     }, {
-        "id": "11",
-        "title": "添加文章",
-        "icon": "&#xe658;",
-        "url": "News/addnews"
+        "id": "52",
+        "title": "添加图书",
+        "icon": "&#xe654;",
+        "url": "Books/addbooks"
+    }, {
+        "id": "53",
+        "title": "分类管理",
+        "icon": "&#xe622;",
+        "url": "Classify/classifyList"
     }]
 }, {
-    "id": "6",
+    "id": "9",
     "title": "留言管理",
     "icon": "fa-stop-circle",
     "url": "#",
     "spread": false,
     "children": [{
-        "id": "8",
+        "id": "91",
         "title": "留言列表",
         "icon": "&#xe6c6;",
         "url": "Message/meslist"
