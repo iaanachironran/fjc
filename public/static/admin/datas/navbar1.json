@@ -32,5 +32,71 @@
         "icon": "&#xe6c6;",
         "url": "Message/meslist"
     }]
+},{
+    "id": "5",
+    "title": "新闻管理",
+    "icon": "fa-stop-circle",
+    "url": "",
+    "spread": true,
+    "children": [{
+        "id": "51",
+        "title": "新闻列表",
+        "icon": "&#xe60a;",
+        "url": "Books/bookslist"
+    }, {
+        "id": "52",
+        "title": "添加新闻",
+        "icon": "&#xe654;",
+        "url": "Books/addbooks"
+    }, {
+        "id": "53",
+        "title": "分类管理",
+        "icon": "&#xe622;",
+        "url": "Classify/classifyList"
+    }]
+},{
+    "id": "5",
+    "title": "文章管理",
+    "icon": "fa-stop-circle",
+    "url": "",
+    "spread": true,
+    "children": [{
+        "id": "51",
+        "title": "文章列表",
+        "icon": "&#xe60a;",
+        "url": "Books/bookslist"
+    }, {
+        "id": "52",
+        "title": "添加文章",
+        "icon": "&#xe654;",
+        "url": "Books/addbooks"
+    }, {
+        "id": "53",
+        "title": "栏目管理",
+        "icon": "&#xe622;",
+        "url": "Classify/classifyList"
+    }]
+},{
+    "id": "5",
+    "title": "栏目管理",
+    "icon": "fa-stop-circle",
+    "url": "",
+    "spread": true,
+    "children": [{
+        "id": "51",
+        "title": "文章列表",
+        "icon": "&#xe60a;",
+        "url": "Books/bookslist"
+    }, {
+        "id": "52",
+        "title": "添加文章",
+        "icon": "&#xe654;",
+        "url": "Books/addbooks"
+    }, {
+        "id": "53",
+        "title": "分类管理",
+        "icon": "&#xe622;",
+        "url": "Classify/classifyList"
+    }]
 }
 ]
